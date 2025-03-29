@@ -25,8 +25,8 @@ const InitialPage = () => {
       <h1 className="font-extrabold text-3xl">Interviewin</h1>
       <div className="flex flex-col gap-1 mt-1">
         <p className="font-normal text-sm text-balance">
-          AI Agent that helps you to preparing your user interview. As for now,
-          only supported for{" "}
+          AI agent that helps you prepare for your user interviews. Currently,
+          it only supports for{" "}
           <strong className="font-bold">frontend engineer</strong> position
         </p>
       </div>

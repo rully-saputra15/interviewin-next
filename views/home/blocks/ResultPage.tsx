@@ -1,6 +1,7 @@
 import React from "react";
 import { useHomeContext } from "../useHomePage";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Github, Linkedin } from "lucide-react";
 
 const ResultPage = () => {
   const { isLoading, question } = useHomeContext();
@@ -24,7 +25,24 @@ const ResultPage = () => {
           <p>
             created by <strong>Rully Saputra</strong>
           </p>
-          <div className="flex gap-3"></div>
+          <div className="flex gap-3 justify-center items-center">
+            <Linkedin
+              onClick={() =>
+                window.open(
+                  "https://www.linkedin.com/in/rully-saputra-7554a7138/",
+                  "noopener noreferrer"
+                )
+              }
+            />
+            <Github
+              onClick={() =>
+                window.open(
+                  "https://github.com/rully-saputra15",
+                  "noopener noreferrer"
+                )
+              }
+            />
+          </div>
         </div>
       )}
     </section>
