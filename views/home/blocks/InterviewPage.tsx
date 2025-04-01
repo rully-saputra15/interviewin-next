@@ -40,12 +40,15 @@ const InterviewPage = () => {
             <Textarea
               id="answer"
               rows={5}
-              maxLength={500}
+              maxLength={1000}
               value={answer}
               onChange={(e) => handleChangeAnswer(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") handleSubmitAnswer();
+              }}
             ></Textarea>
             <p className="text-sm text-left text-muted-foreground">
-              {answerLength} / 500
+              {answerLength} / 1000
             </p>
             <Button
               className="mt-5"

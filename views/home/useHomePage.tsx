@@ -15,7 +15,7 @@ import {
 import useAnimation from "@/lib/hooks/useAnimation";
 import api from "@/lib/api";
 import { toast } from "sonner";
-import { convertDoubleStarToBold } from "@/lib/utils";
+import { cleanModelResponse, convertDoubleStarToBold } from "@/lib/utils";
 import { initialize, trackCustomEvent } from "@/lib/tracking";
 
 type TContext = ReturnType<typeof useHomePage>;
@@ -133,7 +133,7 @@ const useHomePage = () => {
         newMessage: answer,
       });
       const result = await res.json();
-      const newQuestion = convertDoubleStarToBold(result.message);
+      const newQuestion = cleanModelResponse(result.message);
       setQuestion(newQuestion);
       _addNewHistory([
         {
@@ -148,7 +148,7 @@ const useHomePage = () => {
           role: "model",
           parts: [
             {
-              text: newQuestion,
+              text: result.message,
             },
           ],
         },
@@ -176,7 +176,7 @@ const useHomePage = () => {
         newMessage: "AMAN AJA",
       });
       const result = await res.json();
-      const newQuestion = convertDoubleStarToBold(result.message);
+      const newQuestion = cleanModelResponse(result.message);
       setQuestion(newQuestion);
       trackCustomEvent("see_full_result", {
         event_category: "interaction",
