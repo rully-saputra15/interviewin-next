@@ -5,6 +5,7 @@ import { HomeProvider, useHomeContext } from "./useHomePage";
 import InitialPage from "./blocks/InitialPage";
 import InterviewPage from "./blocks/InterviewPage";
 import ResultPage from "./blocks/ResultPage";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const HomePage = () => {
   const { pageState, shouldRenderInitialPage } = useHomeContext();
@@ -20,10 +21,14 @@ const HomePage = () => {
 };
 
 const ClientHomePage = () => {
+  // Create a client
+  const queryClient = new QueryClient();
   return (
-    <HomeProvider>
-      <HomePage />
-    </HomeProvider>
+    <QueryClientProvider client={queryClient}>
+      <HomeProvider>
+        <HomePage />
+      </HomeProvider>
+    </QueryClientProvider>
   );
 };
 

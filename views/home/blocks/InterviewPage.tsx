@@ -5,17 +5,24 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Loading from "@/components/custom/Loading";
+import { CircleStop, Mic } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 const InterviewPage = () => {
   const {
     isLoading,
+    isStartRecorded,
+    isGenerateTextFromAudio,
     question,
     answerLength,
     answer,
+    isMicPermissionGranted,
+    isQuestionExitAnimation,
     handleChangeAnswer,
     handleSubmitAnswer,
     handleEndInterview,
-    isQuestionExitAnimation,
+    handleRecordAudio,
+    handleStopRecordAudio,
   } = useHomeContext();
   return (
     <section className={cn(isQuestionExitAnimation ? "fade_out" : "")}>
@@ -42,6 +49,7 @@ const InterviewPage = () => {
               rows={5}
               maxLength={1000}
               value={answer}
+              disabled={isGenerateTextFromAudio}
               onChange={(e) => handleChangeAnswer(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === "Enter") handleSubmitAnswer();
@@ -50,13 +58,35 @@ const InterviewPage = () => {
             <p className="text-sm text-left text-muted-foreground">
               {answerLength} / 1000
             </p>
-            <Button
-              className="mt-5"
-              disabled={answerLength === 0}
-              onClick={handleSubmitAnswer}
-            >
-              Submit
-            </Button>
+            <section className="flex flex-col gap-3 mt-2">
+              {isGenerateTextFromAudio ? (
+                <Button variant="outline">Loading</Button>
+              ) : (
+                <Button
+                  onClick={
+                    isStartRecorded ? handleStopRecordAudio : handleRecordAudio
+                  }
+                  disabled={isGenerateTextFromAudio || isMicPermissionGranted}
+                  variant="secondary"
+                >
+                  {isStartRecorded ? (
+                    <CircleStop />
+                  ) : (
+                    <>
+                      <Mic />
+                      Record
+                      <Badge variant="destructive">New!</Badge>
+                    </>
+                  )}
+                </Button>
+              )}
+              <Button
+                disabled={answerLength === 0}
+                onClick={handleSubmitAnswer}
+              >
+                Submit
+              </Button>
+            </section>
           </div>
         </div>
       )}

@@ -11,3 +11,7 @@ export type InterviewApiParams = {
   newMessage: string;
   history: Array<InterviewHistory>;
 };
+
+export type GenerateTextFromAudioParams = {
+  file: Blob;
+};

@@ -6,7 +6,9 @@ import {
   useRef,
   useEffect,
 } from "react";
+import { useMutation } from "@tanstack/react-query";
 import {
+  GenerateTextFromAudioParams,
   InterviewHistory,
   LANGUAGE,
   PAGE_STATE,
@@ -23,6 +25,8 @@ type TContext = ReturnType<typeof useHomePage>;
 const returnPromise = new Promise<void>((resolve) => resolve());
 const initialState: TContext = {
   pageState: "INITIAL",
+  isGenerateTextFromAudio: false,
+  isStartRecorded: false,
   selectedLanguage: "bahasa",
   selectedSeniorityLevel: null,
   shouldRenderInitialPage: false,
@@ -32,6 +36,7 @@ const initialState: TContext = {
   question: "",
   answerLength: 0,
   answer: "",
+  isMicPermissionGranted: false,
   isQuestionExitAnimation: false,
   handleStartInterview: () => returnPromise,
   handleChangeAnswer: () => {},
@@ -39,6 +44,8 @@ const initialState: TContext = {
   handleEndInterview: () => returnPromise,
   handleSelectLanguage: () => {},
   handleSelectSeniorityLevel: () => {},
+  handleRecordAudio: () => returnPromise,
+  handleStopRecordAudio: () => {},
 };
 
 const HomeContext = createContext(initialState);
@@ -51,10 +58,18 @@ const useHomePage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmittingAnswer, setIsSubmittingAnswer] = useState(false);
 
+  const mediaRecorder = useRef<MediaRecorder>(null);
+  const audioDataRef = useRef<Array<Blob>>([]);
+  const [isStartRecorded, setIsStartRecorded] = useState(false);
+
   const chatHistory = useRef<Array<InterviewHistory>>([]);
 
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
+
+  const isMicPermissionGranted = useMemo(() => {
+    return !mediaRecorder.current;
+  }, [mediaRecorder.current]);
 
   const {
     shouldRender: shouldRenderInitialPage,
@@ -69,8 +84,20 @@ const useHomePage = () => {
     cssTransitionDelay: 500,
   });
 
+  const { mutate: generateTextFromAudio, isPending: isGenerateTextFromAudio } =
+    useMutation({
+      mutationFn: (payload: GenerateTextFromAudioParams) => {
+        return api.generateTextFromAudio(payload);
+      },
+      onSuccess: async (res) => {
+        const data = await res.json();
+        setAnswer(data.message);
+      },
+    });
+
   useEffect(() => {
     initialize();
+    _initiateMediaRecorder();
   }, []);
 
   const handleSelectLanguage = (lang: LANGUAGE) => setSelectedLanguage(lang);
@@ -190,12 +217,51 @@ const useHomePage = () => {
     }
   };
 
+  const handleRecordAudio = () => {
+    audioDataRef.current = [];
+    mediaRecorder.current?.start();
+    setIsStartRecorded(true);
+  };
+
+  const handleStopRecordAudio = () => {
+    mediaRecorder.current?.stop();
+  };
+
   const _addNewHistory = (interviews: Array<InterviewHistory>) => {
     const newHistory: Array<InterviewHistory> = [
       ...chatHistory.current,
       ...interviews,
     ];
     chatHistory.current = newHistory;
+  };
+
+  const _initiateMediaRecorder = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: true,
+      });
+
+      mediaRecorder.current = new MediaRecorder(stream); // construct media recorder
+
+      mediaRecorder.current.ondataavailable = (e) => {
+        // when the recording start and the data is available
+        audioDataRef.current.push(e.data);
+      };
+      mediaRecorder.current.onstop = () => {
+        // event after we click stop button
+        setIsStartRecorded(false);
+
+        const blob = new Blob(audioDataRef.current, {
+          type: "audio/mp3",
+        });
+
+        generateTextFromAudio({
+          file: blob,
+        });
+      };
+    } catch (err) {
+      toast.error(`Error Audio Permission: ${err}`);
+    }
   };
 
   return {
@@ -209,6 +275,9 @@ const useHomePage = () => {
     answerLength,
     isStartInterviewButtonEnabled,
     isQuestionExitAnimation,
+    isGenerateTextFromAudio,
+    isStartRecorded,
+    isMicPermissionGranted,
     shouldRenderInitialPage,
     handleSelectLanguage,
     handleEndInterview,
@@ -216,6 +285,8 @@ const useHomePage = () => {
     handleChangeAnswer,
     handleSubmitAnswer,
     handleSelectSeniorityLevel,
+    handleRecordAudio,
+    handleStopRecordAudio,
   };
 };
 
