@@ -221,6 +221,11 @@ const useHomePage = () => {
     audioDataRef.current = [];
     mediaRecorder.current?.start();
     setIsStartRecorded(true);
+    trackCustomEvent("record_audio", {
+      event_category: "interaction",
+      value: 1,
+      event_name: "record_audio",
+    });
   };
 
   const handleStopRecordAudio = () => {

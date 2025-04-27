@@ -8,7 +8,8 @@ export type EVENT_NAME =
   | "see_full_result"
   | "submit_answer"
   | `${SENIORITY_LEVEL}_level`
-  | `${LANGUAGE}_lang`;
+  | `${LANGUAGE}_lang`
+  | "record_audio";
 
 export const initialize = () => {
   window.dataLayer = window.dataLayer || [];
