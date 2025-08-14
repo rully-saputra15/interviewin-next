@@ -4,7 +4,7 @@ import React from "react";
 
 const LandingPage = () => {
   return (
-    <main className="fade_in">
+    <main className="fade_in h-screen flex flex-col text-left justify-center items-start">
       <h1 className="font-black text-4xl">Interviewin</h1>
       <p className="font-light text-md">Learn Faster, Think Sharper</p>
       <div className="flex align-center justify-center mt-2">
