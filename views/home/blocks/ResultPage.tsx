@@ -1,10 +1,11 @@
 import React from "react";
 import { useHomeContext } from "../useHomePage";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Github, Linkedin } from "lucide-react";
+import { CircleFadingArrowUp, Dumbbell, Github, Linkedin } from "lucide-react";
+import SectionCard from "./SectionCard";
+import { Badge } from "@/components/ui/badge";
 
 const ResultPage = () => {
-  const { isLoading, question } = useHomeContext();
+  const { isLoading, interviewResult } = useHomeContext();
   return (
     <section className="p-5 fade_in text-balance">
       {isLoading ? (
@@ -16,12 +17,49 @@ const ResultPage = () => {
             {`If you find that this AI Agent is helping you improve, we'd love for you to share it with others. Together, we can help even more people boost their interview skills!`}{" "}
             🤟
           </p>
-          <ScrollArea className="h-56 w-full rounded-md border p-4">
-            <div
-              dangerouslySetInnerHTML={{ __html: question }}
-              className="text-sm text-left text-balance"
-            ></div>
-          </ScrollArea>
+          <section className="flex flex-col gap-2 text-left w-full">
+            <SectionCard
+              content={
+                <p className="font-medium text-sm">{interviewResult?.title}</p>
+              }
+            />
+
+            <SectionCard
+              title={
+                <div className="flex items-center gap-2">
+                  <Dumbbell size={16} />
+                  <h3 className="font-bold text-md">Strengths</h3>
+                </div>
+              }
+              content={
+                <div>
+                  {interviewResult?.improvements.map((el) => (
+                    <Badge key={el} variant="outline">
+                      {el}
+                    </Badge>
+                  ))}
+                </div>
+              }
+            />
+
+            <SectionCard
+              title={
+                <div className="flex items-center gap-2">
+                  <CircleFadingArrowUp size={16} />
+                  <h3 className="font-bold text-md">Improvements</h3>
+                </div>
+              }
+              content={
+                <div>
+                  {interviewResult?.strengths.map((el) => (
+                    <Badge key={el} variant="default">
+                      {el}
+                    </Badge>
+                  ))}
+                </div>
+              }
+            />
+          </section>
           <p>
             created by <strong>Rully Saputra</strong>
           </p>

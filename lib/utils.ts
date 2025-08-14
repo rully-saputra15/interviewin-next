@@ -10,6 +10,8 @@ export const cleanModelResponse = (text: string) =>
     .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>")
     .replace(/`(.*?)`/g, "<code>$1</code>");
 
+export const convertResponseToObject = (text: string) => JSON.parse(text.trim());
+
 export const convertDoubleStarToBold = (text: string) =>
   text.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>");
 

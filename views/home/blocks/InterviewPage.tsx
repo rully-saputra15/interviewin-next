@@ -5,8 +5,14 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Loading from "@/components/custom/Loading";
-import { CircleStop, Mic } from "lucide-react";
+import {
+  BookOpenText,
+  CircleQuestionMark,
+  CircleStop,
+  Mic,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import SectionCard from "./SectionCard";
 
 const InterviewPage = () => {
   const {
@@ -38,10 +44,42 @@ const InterviewPage = () => {
             End
           </Button>
           <h1 className="font-bold text-lg sm:text-xl">User Interview</h1>
-          <div
-            dangerouslySetInnerHTML={{ __html: question }}
-            className="text-sm text-left text-balance"
-          ></div>
+          <div className="flex flex-col gap-2 text-left w-full">
+            <SectionCard
+              title={<Badge variant={"secondary"}>User&apos;s Role</Badge>}
+              content={<p className="font-medium text-sm">{question?.role}</p>}
+            />
+
+            <SectionCard
+              title={
+                <div className="flex items-center gap-2">
+                  <CircleQuestionMark size={16} />
+                  <h3 className="font-bold text-md">Question</h3>
+                </div>
+              }
+              content={
+                <p className="font-medium text-xs">{question?.question}</p>
+              }
+            />
+
+            <SectionCard
+              title={
+                <div className="flex items-center gap-2">
+                  <BookOpenText size={16} />
+                  <h3 className="font-bold text-md">Competencies</h3>
+                </div>
+              }
+              content={
+                <div>
+                  {question?.competencies.map((el) => (
+                    <Badge key={el} variant="default">
+                      {el}
+                    </Badge>
+                  ))}
+                </div>
+              }
+            />
+          </div>
           <div className="grid w-full gap-1.5">
             <Label htmlFor="answer">Your Answer</Label>
             <Textarea
@@ -93,5 +131,6 @@ const InterviewPage = () => {
     </section>
   );
 };
+
 
 export default InterviewPage;

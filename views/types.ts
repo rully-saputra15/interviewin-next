@@ -15,3 +15,16 @@ export type InterviewApiParams = {
 export type GenerateTextFromAudioParams = {
   file: Blob;
 };
+
+export type Question = {
+  title: string;
+  role: string;
+  question: string;
+  competencies: Array<string>;
+}
+
+export type InterviewResult = {
+  title: string;
+  strengths: Array<string>;
+  improvements: Array<string>;
+}

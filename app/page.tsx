@@ -1,9 +1,7 @@
-import HomePage from "@/views/home";
+import LandingPage from "@/views/landing";
 
-export default function Home() {
+export default async function Landing() {
   return (
-    <>
-      <HomePage />
-    </>
+    <LandingPage />
   );
 }

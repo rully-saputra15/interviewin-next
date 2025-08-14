@@ -10,14 +10,16 @@ import { useMutation } from "@tanstack/react-query";
 import {
   GenerateTextFromAudioParams,
   InterviewHistory,
+  InterviewResult,
   LANGUAGE,
   PAGE_STATE,
+  Question,
   SENIORITY_LEVEL,
 } from "../types";
 import useAnimation from "@/lib/hooks/useAnimation";
 import api from "@/lib/api";
 import { toast } from "sonner";
-import { cleanModelResponse, convertDoubleStarToBold } from "@/lib/utils";
+import { convertResponseToObject } from "@/lib/utils";
 import { initialize, trackCustomEvent } from "@/lib/tracking";
 
 type TContext = ReturnType<typeof useHomePage>;
@@ -33,7 +35,17 @@ const initialState: TContext = {
   isInitialPageExitAnimating: false,
   isStartInterviewButtonEnabled: false,
   isLoading: false,
-  question: "",
+  question: {
+    competencies: [''],
+    question: '',
+    role: '',
+    title: ''
+  },
+  interviewResult:{
+    improvements: [''],
+    strengths: [''],
+    title: ''
+  },
   answerLength: 0,
   answer: "",
   isMicPermissionGranted: false,
@@ -64,7 +76,18 @@ const useHomePage = () => {
 
   const chatHistory = useRef<Array<InterviewHistory>>([]);
 
-  const [question, setQuestion] = useState("");
+  const [question, setQuestion] = useState<Question>({
+    competencies: [''],
+    question: '',
+    role: '',
+    title: ''
+  });
+
+  const [interviewResult, setInterviewResult] = useState<InterviewResult>({
+    improvements: [''],
+    strengths: [''],
+    title: ''
+  })
   const [answer, setAnswer] = useState("");
 
   const isMicPermissionGranted = useMemo(() => {
@@ -124,7 +147,7 @@ const useHomePage = () => {
           ],
         },
       ]);
-      setQuestion(convertDoubleStarToBold(result.message));
+      setQuestion(convertResponseToObject(result.message));
       trackCustomEvent(`${selectedSeniorityLevel || "entry"}_level`, {
         event_category: "interaction",
         value: 1,
@@ -160,7 +183,7 @@ const useHomePage = () => {
         newMessage: answer,
       });
       const result = await res.json();
-      const newQuestion = cleanModelResponse(result.message);
+      const newQuestion = convertResponseToObject(result.message);
       setQuestion(newQuestion);
       _addNewHistory([
         {
@@ -203,8 +226,8 @@ const useHomePage = () => {
         newMessage: "AMAN AJA",
       });
       const result = await res.json();
-      const newQuestion = cleanModelResponse(result.message);
-      setQuestion(newQuestion);
+      const interViewResult = convertResponseToObject(result.message);
+      setInterviewResult(interViewResult);
       trackCustomEvent("see_full_result", {
         event_category: "interaction",
         value: 1,
@@ -277,6 +300,7 @@ const useHomePage = () => {
     isLoading,
     question,
     answer,
+    interviewResult,
     answerLength,
     isStartInterviewButtonEnabled,
     isQuestionExitAnimation,
