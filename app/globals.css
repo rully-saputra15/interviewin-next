@@ -121,9 +121,10 @@
   }
 }
 
-html {
+html, body {
   font-family: "Geist Mono", "Geist Mono Fallback";
   font-display: swap;
+  max-width: 100%;
 }
 
 .fade_in {
