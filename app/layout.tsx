@@ -41,7 +41,7 @@ export default function RootLayout({
       <Head>
         {/* Preconnect to Google Tag Manager (or other third-party service) */}
         <link rel="preconnect" href="https://www.googletagmanager.com" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
         {/* Optional: DNS-prefetch if preconnect isn't required */}
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />

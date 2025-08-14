@@ -123,6 +123,7 @@
 
 html {
   font-family: "Geist Mono", "Geist Mono Fallback";
+  font-display: swap;
 }
 
 .fade_in {
