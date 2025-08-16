@@ -10,7 +10,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 const HomePage = () => {
   const { pageState, shouldRenderInitialPage } = useHomeContext();
   return (
-    <main className="text-center h-screen flex justify-center items-center">
+    <main className="text-center">
       {shouldRenderInitialPage && <InitialPage />}
       {!shouldRenderInitialPage && pageState === "INTERVIEWING" && (
         <InterviewPage />

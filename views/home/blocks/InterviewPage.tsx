@@ -31,7 +31,7 @@ const InterviewPage = () => {
     handleStopRecordAudio,
   } = useHomeContext();
   return (
-    <section className={cn(isQuestionExitAnimation ? "fade_out" : "")}>
+    <section className={cn(isQuestionExitAnimation ? "fade_out" : "w-full")}>
       {isLoading ? (
         <Loading />
       ) : (
@@ -72,9 +72,9 @@ const InterviewPage = () => {
               content={
                 <div>
                   {question?.competencies.map((el) => (
-                    <Badge key={el} variant="default">
+                    <li key={el} className="text-xs">
                       {el}
-                    </Badge>
+                    </li>
                   ))}
                 </div>
               }

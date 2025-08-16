@@ -49,7 +49,7 @@ export default function RootLayout({
         {/* Add more preconnect or dns-prefetch links as needed */}
       </Head>
       <body
-        className={`${geistMono.variable}`}
+        className={`${geistMono.variable} antialiased min-h-screen flex justify-center items-center mx-2`}
       >
         {children}
         <Toaster richColors position="top-center" />

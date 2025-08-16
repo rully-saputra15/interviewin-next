@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 const ResultPage = () => {
   const { isLoading, interviewResult } = useHomeContext();
   return (
-    <section className="p-5 fade_in text-balance">
+    <section className="p-5 fade_in text-balance w-full">
       {isLoading ? (
         <p>Fetching the final result</p>
       ) : (
@@ -33,10 +33,10 @@ const ResultPage = () => {
               }
               content={
                 <div>
-                  {interviewResult?.improvements.map((el) => (
-                    <Badge key={el} variant="outline">
+                  {interviewResult?.strengths.map((el) => (
+                    <li key={el} className="text-xs">
                       {el}
-                    </Badge>
+                    </li>
                   ))}
                 </div>
               }
@@ -51,10 +51,10 @@ const ResultPage = () => {
               }
               content={
                 <div>
-                  {interviewResult?.strengths.map((el) => (
-                    <Badge key={el} variant="default">
+                  {interviewResult?.improvements.map((el) => (
+                    <li key={el} className="text-xs">
                       {el}
-                    </Badge>
+                    </li>
                   ))}
                 </div>
               }

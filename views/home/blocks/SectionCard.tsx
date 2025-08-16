@@ -8,7 +8,7 @@ type SectionCardProps = {
 const SectionCard = ({ title, content }: SectionCardProps) => {
   return (
     <Card>
-      <CardContent className="space-y-2">
+      <CardContent className="w-full space-y-2">
         {title}
         {content}
       </CardContent>
