@@ -2,7 +2,6 @@ import React from "react";
 import { useHomeContext } from "../useHomePage";
 import { CircleFadingArrowUp, Dumbbell, Github, Linkedin } from "lucide-react";
 import SectionCard from "./SectionCard";
-import { Badge } from "@/components/ui/badge";
 
 const ResultPage = () => {
   const { isLoading, interviewResult } = useHomeContext();
