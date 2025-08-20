@@ -8,6 +8,10 @@ import Head from "next/head";
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  display: 'swap',
+  preload: true,
+  fallback: ['monospace'], 
+  adjustFontFallback: false,
 });
 
 export const metadata: Metadata = {

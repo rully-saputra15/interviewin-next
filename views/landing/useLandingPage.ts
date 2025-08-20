@@ -4,7 +4,8 @@ import { useRef } from "react";
 
 const useLandingPage = () => {
   const containerRef = useRef(null);
-  useGSAP(
+
+  const { contextSafe } = useGSAP(
     () => {
       const split = SplitText.create(".text", { type: "words" });
       const tl = gsapAnimation.timeline({ defaults: { duration: 1 } });
@@ -12,19 +13,45 @@ const useLandingPage = () => {
         y: 50,
         autoAlpha: 0,
         stagger: 0.05,
+        ease: "power1.out",
       }).from(
         ".cta-button",
         {
           y: 50,
           autoAlpha: 0,
+          ease: "power1.out",
         },
-        "-=0.8"
+        "-=1"
       );
     },
     { scope: containerRef }
   );
 
-  return { containerRef };
+  const handleGoToSession = contextSafe(() => {
+    const split = SplitText.create(".text", { type: "words" });
+    const tl = gsapAnimation.timeline({
+      defaults: { duration: 1 },
+      onComplete: () => {
+        window.location.assign("/session");
+      },
+    });
+    tl.to(split.words, {
+      y: -50,
+      opacity: 0,
+      stagger: 0.05,
+      ease: "power1.out",
+    }).to(
+      ".cta-button",
+      {
+        y: 100,
+        opacity: 0,
+        ease: "power1.out",
+      },
+      "-=1"
+    );
+  });
+
+  return { containerRef, handleGoToSession };
 };
 
 export default useLandingPage;

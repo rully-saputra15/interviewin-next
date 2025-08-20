@@ -8,9 +8,9 @@ import ResultPage from "./blocks/ResultPage";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const HomePage = () => {
-  const { pageState, shouldRenderInitialPage } = useHomeContext();
+  const { containerRef, pageState, shouldRenderInitialPage } = useHomeContext();
   return (
-    <main className="text-center">
+    <main ref={containerRef} className="text-center">
       {shouldRenderInitialPage && <InitialPage />}
       {!shouldRenderInitialPage && pageState === "INTERVIEWING" && (
         <InterviewPage />

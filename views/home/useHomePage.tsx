@@ -21,12 +21,19 @@ import api from "@/lib/api";
 import { toast } from "sonner";
 import { convertResponseToObject } from "@/lib/utils";
 import { initialize, trackCustomEvent } from "@/lib/tracking";
+import { useGSAP } from "@gsap/react";
+import { gsapAnimation, SplitText } from "@/animation/gsap";
+import { CLASSNAMES } from "./constants";
+import { generateCustomScaleWithAutoAlpha } from "@/lib/helpers/animation";
 
 type TContext = ReturnType<typeof useHomePage>;
 
 const returnPromise = new Promise<void>((resolve) => resolve());
 const initialState: TContext = {
   pageState: "INITIAL",
+  containerRef: {
+    current: null,
+  },
   isGenerateTextFromAudio: false,
   isStartRecorded: false,
   selectedLanguage: "bahasa",
@@ -36,15 +43,15 @@ const initialState: TContext = {
   isStartInterviewButtonEnabled: false,
   isLoading: false,
   question: {
-    competencies: [''],
-    question: '',
-    role: '',
-    title: ''
+    competencies: [""],
+    question: "",
+    role: "",
+    title: "",
   },
-  interviewResult:{
-    improvements: [''],
-    strengths: [''],
-    title: ''
+  interviewResult: {
+    improvements: [""],
+    strengths: [""],
+    title: "",
   },
   answerLength: 0,
   answer: "",
@@ -77,18 +84,20 @@ const useHomePage = () => {
   const chatHistory = useRef<Array<InterviewHistory>>([]);
 
   const [question, setQuestion] = useState<Question>({
-    competencies: [''],
-    question: '',
-    role: '',
-    title: ''
+    competencies: [""],
+    question: "",
+    role: "",
+    title: "",
   });
 
   const [interviewResult, setInterviewResult] = useState<InterviewResult>({
-    improvements: [''],
-    strengths: [''],
-    title: ''
-  })
+    improvements: [""],
+    strengths: [""],
+    title: "",
+  });
   const [answer, setAnswer] = useState("");
+
+  const containerRef = useRef(null);
 
   const isMicPermissionGranted = useMemo(() => {
     return !mediaRecorder.current;
@@ -123,11 +132,102 @@ const useHomePage = () => {
     _initiateMediaRecorder();
   }, []);
 
+  const { contextSafe } = useGSAP(
+    () => {
+      const splitText = SplitText.create(`.${CLASSNAMES.DESCRIPTION}`, {
+        type: "words",
+      });
+      const tl = gsapAnimation.timeline({
+        defaults: { duration: 0.9, ease: "power1.out" },
+      });
+      tl.from(`.${CLASSNAMES.TITLE}`, {
+        ...generateCustomScaleWithAutoAlpha(),
+      })
+        .from(
+          splitText.words,
+          {
+            y: 50,
+            autoAlpha: 0,
+            stagger: 0.03,
+          },
+          "-=1"
+        )
+        .from(
+          `.${CLASSNAMES.LANGUAGE}`,
+          {
+            ...generateCustomScaleWithAutoAlpha(),
+          },
+          "-=0.8"
+        )
+        .from(
+          `.${CLASSNAMES.SENIORITY}`,
+          {
+            ...generateCustomScaleWithAutoAlpha(),
+          },
+          "-=0.6"
+        )
+        .from(
+          `.${CLASSNAMES.SUBMIT_BUTTON}`,
+          {
+            ...generateCustomScaleWithAutoAlpha(),
+            y: 50,
+          },
+          "-=1"
+        );
+    },
+    { scope: containerRef }
+  );
+
   const handleSelectLanguage = (lang: LANGUAGE) => setSelectedLanguage(lang);
   const handleSelectSeniorityLevel = (level: SENIORITY_LEVEL) =>
     setSelectedSeniorityLevel(level);
 
-  const handleStartInterview = async () => {
+  const handleStartInterview = contextSafe(() => {
+    const splitText = SplitText.create(`.${CLASSNAMES.DESCRIPTION}`, {
+      type: "words",
+    });
+    const tl = gsapAnimation.timeline({
+      defaults: { duration: 0.9, autoAlpha: 0, ease: "power2.out" },
+      onComplete: () => {
+        handleInitInterview();
+      },
+    });
+
+    tl.to(`.${CLASSNAMES.SUBMIT_BUTTON}`, {
+      ...generateCustomScaleWithAutoAlpha(1.2),
+    });
+    tl.to(
+      `.${CLASSNAMES.SENIORITY}`,
+      {
+        x: 20,
+      },
+      "0.2"
+    );
+    tl.to(
+      `.${CLASSNAMES.LANGUAGE}`,
+      {
+        x: -20,
+      },
+      "0.2"
+    );
+    tl.to(
+      splitText.words,
+      {
+        y: -50,
+        stagger: 0.03,
+      },
+      "-=0.8"
+    );
+    tl.to(
+      `.${CLASSNAMES.TITLE}`,
+      {
+        ...generateCustomScaleWithAutoAlpha(1.2),
+      },
+      "-=0.4"
+    );
+  });
+
+  const handleInitInterview = async () => {
     try {
       setPageState("INTERVIEWING");
       setIsLoading(true);
@@ -294,6 +394,7 @@ const useHomePage = () => {
 
   return {
     pageState,
+    containerRef,
     selectedLanguage,
     selectedSeniorityLevel,
     isInitialPageExitAnimating,
