@@ -1,9 +1,11 @@
 import { gsapAnimation, SplitText } from "@/animation/gsap";
 import { useGSAP } from "@gsap/react";
+import { useRouter } from "next/navigation";
 import { useRef } from "react";
 
 const useLandingPage = () => {
   const containerRef = useRef(null);
+  const router = useRouter();
 
   const { contextSafe } = useGSAP(
     () => {
@@ -32,7 +34,7 @@ const useLandingPage = () => {
     const tl = gsapAnimation.timeline({
       defaults: { duration: 1 },
       onComplete: () => {
-        window.location.assign("/session");
+        router.push("/session")
       },
     });
     tl.to(split.words, {
