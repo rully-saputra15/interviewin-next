@@ -123,7 +123,7 @@ const useHomePage = () => {
       },
       onSuccess: async (res) => {
         const data = await res.json();
-        setAnswer(data.message);
+        setAnswer(data.data);
       },
     });
 
